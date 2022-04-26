@@ -127,3 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# To much to keep
+ratings.tsv
+titles.tsv
