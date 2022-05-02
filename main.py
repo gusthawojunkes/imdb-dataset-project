@@ -47,19 +47,36 @@ for rating in ratings:
             not_found.append(id)
 
 total = len(IMDB_DATA)
-print("Total of movies loaded: " + str(total) + "\n")
+print("Total of movies loaded: " + str(total))
 
 with_errors = len(not_found)
 percentage_with_errors = (with_errors / total) * 100
-print("Total of movies not found: " + str(with_errors) + " (" + str(percentage_with_errors) + " of total)\n")
+print("Total of movies not found: " + str(with_errors) + " (" + str(percentage_with_errors) + " of total)")
 
 csvTitles = open('data.csv','w',newline='',encoding='utf-8')
 writeFile = csv.writer(csvTitles,delimiter=';')
 
-for data in IMDB_DATA.values():
-    csvTitles=[]
-    for index in data:
-        csvTitles.append(data[index])
-    writeFile.writerow(csvTitles)
+values = IMDB_DATA.values()
+
+
+count = 0
+for dictionary in values:
+    row = []
+    for property in dictionary:
+        data = dictionary[property]
+        try:
+            if count > 0 and dictionary['startYear'] != '\\N':
+                year = int(dictionary['startYear'])
+                if data and year >= 1990 and year <= 2020:
+                    row.append(data)
+            elif data:
+                row.append(data)
+
+        except:
+            pass
+    writeFile.writerow(row)
+    count += 1
+
+print("Total of movies written: " + str(count) + "\n")
     
 csvTitles.close()
