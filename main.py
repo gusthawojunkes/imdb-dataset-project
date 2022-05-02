@@ -1,7 +1,7 @@
 import csv
 
-ratings_tsv = open("ratings.tsv")
-titles_tsv = open("titles.tsv")
+ratings_tsv = open("ratings.tsv","r",encoding='utf-8')
+titles_tsv = open("titles.tsv","r",encoding='utf-8')
 ratings = csv.reader(ratings_tsv, delimiter="\t")
 titles = csv.reader(titles_tsv, delimiter="\t")
 
@@ -46,13 +46,20 @@ for rating in ratings:
         except KeyError:
             not_found.append(id)
 
-
-for data in IMDB_DATA.values():
-    print(data)
-
 total = len(IMDB_DATA)
 print("Total of movies loaded: " + str(total) + "\n")
 
 with_errors = len(not_found)
 percentage_with_errors = (with_errors / total) * 100
 print("Total of movies not found: " + str(with_errors) + " (" + str(percentage_with_errors) + " of total)\n")
+
+csvTitles = open('data.csv','w',newline='',encoding='utf-8')
+writeFile = csv.writer(csvTitles,delimiter=';')
+
+for data in IMDB_DATA.values():
+    csvTitles=[]
+    for index in data:
+        csvTitles.append(data[index])
+    writeFile.writerow(csvTitles)
+    
+csvTitles.close()
