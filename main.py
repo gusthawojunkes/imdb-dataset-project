@@ -1,4 +1,5 @@
 import csv
+import os
 
 ratings_tsv = open("ratings.tsv","r",encoding='utf-8')
 titles_tsv = open("titles.tsv","r",encoding='utf-8')
@@ -53,29 +54,39 @@ with_errors = len(not_found)
 percentage_with_errors = (with_errors / total) * 100
 print("Total of movies not found: " + str(with_errors) + " (" + str(percentage_with_errors) + " of total)")
 
+try: os.remove("data.csv")
+except: pass
+    
 csvTitles = open('data.csv','w',newline='',encoding='utf-8')
 writeFile = csv.writer(csvTitles,delimiter=';')
 
 values = IMDB_DATA.values()
 
-
 count = 0
+
 for dictionary in values:
     row = []
-    for property in dictionary:
-        data = dictionary[property]
-        try:
+    try:
+        type = dictionary['titleType']
+        if type == 'movie':
             if count > 0 and dictionary['startYear'] != '\\N':
                 year = int(dictionary['startYear'])
-                if data and year >= 1990 and year <= 2020:
-                    row.append(data)
-            elif data:
-                row.append(data)
+                if year >= 2000 and year <= 2020:
+                    for property in dictionary:
+                        data = dictionary[property]
+                        if data and data != []:
+                            row.append(data)
+            else:
+                for property in dictionary:
+                    data = dictionary[property]
+                    if data:
+                        row.append(data)
+    except:
+        pass
 
-        except:
-            pass
-    writeFile.writerow(row)
-    count += 1
+    if len(row) > 0:
+        writeFile.writerow(row)
+        count += 1
 
 print("Total of movies written: " + str(count) + "\n")
     
